@@ -10,25 +10,26 @@ define(function(require, exports, module) {
   var Engine = require('famous/core/Engine');
   var Modifier = require('famous/core/Modifier');
   var Transform = require('famous/core/Transform');
+  var StateModifier = require('famous/modifiers/StateModifier');
   var ImageSurface = require('famous/surfaces/ImageSurface');
   
-  // create the main context
+  var MainView = require('views/MainView');
+  
   var mainContext = Engine.createContext();
+  mainContext.setPerspective(1000);
   
-  // your app here
-  var logo = new ImageSurface({
-    size: [200, 200],
-    content: '/content/images/famous_logo.png',
-    classes: ['backfaceVisibility']
+  var photo = new ImageSurface({
+    content: 'content/images/DELETE_THIS.jpg'
+  });
+  var photoModifier = new StateModifier({
+    size: function() { return [(window.innerWidth * 0.9), (window.innerWidth * 0.9 * 1398 / 2100)]; },
+    origin: [1, 0],
+    align: [1, 0],
+    transform: Transform.translate(0, 0, -0.1)
   });
   
-  var initialTime = Date.now();
-  var centerSpinModifier = new Modifier({
-    origin: [0.5, 0.5],
-    transform : function() {
-        return Transform.rotateY(.002 * (Date.now() - initialTime));
-    }
-  });
+  var mainLayout = new MainView();
   
-  mainContext.add(centerSpinModifier).add(logo);
+  mainContext.add(photoModifier).add(photo);
+  mainContext.add(mainLayout);
 });
